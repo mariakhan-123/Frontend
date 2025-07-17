@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import UserTable from '../components/auth/UserTable';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [imgKey, setImgKey] = useState(Date.now()); // Used to force re-render of images
+  const [imgKey, setImgKey] = useState(Date.now());
+  const [showUsers, setShowUsers] = useState(false);
   const navigate = useNavigate();
 
   const fetchUser = async () => {
@@ -51,7 +53,7 @@ const Dashboard = () => {
       );
 
       setUser(response.data);
-      setImgKey(Date.now()); // Force image refresh
+      setImgKey(Date.now());
     } catch (err) {
       alert('Failed to update profile image');
       console.error(err);
@@ -79,7 +81,7 @@ const Dashboard = () => {
       );
 
       setUser(response.data);
-      setImgKey(Date.now()); // Force image refresh
+      setImgKey(Date.now());
     } catch (err) {
       alert('Failed to update cover image');
       console.error(err);
@@ -94,6 +96,14 @@ const Dashboard = () => {
 
   if (loading) return <div className="text-center p-4">Loading...</div>;
   if (error) return <div className="text-red-500 p-4">Error: {error}</div>;
+
+  const profileImageSrc = user.profileImg
+    ? `http://localhost:8000${user.profileImg}`
+    : 'http://localhost:8000/defaults/default-profile.png';
+
+  const coverImageSrc = user.coverImg
+    ? `http://localhost:8000${user.coverImg}`
+    : 'http://localhost:8000/defaults/default-cover.png';
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -110,18 +120,14 @@ const Dashboard = () => {
 
       {/* Profile Section */}
       <div className="max-w-4xl mx-auto mt-6 bg-white rounded-lg shadow relative">
-        {/* Cover Image Section */}
+        {/* Cover Image */}
         <div className="h-48 bg-gray-200 rounded-t-lg overflow-hidden relative">
-          {user.coverImg && (
-            <img
-              key={`cover-${imgKey}`}
-              src={`data:image/jpeg;base64,${user.coverImg}`}
-              alt="Cover"
-              className="w-full h-full object-cover"
-            />
-          )}
-
-          {/* Cover Image Edit Button */}
+          <img
+            key={`cover-${imgKey}`}
+            src={coverImageSrc}
+            alt="Cover"
+            className="w-full h-full object-cover"
+          />
           <label className="absolute top-4 right-4 bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded cursor-pointer hover:bg-opacity-75">
             Change Cover
             <input
@@ -133,26 +139,24 @@ const Dashboard = () => {
           </label>
         </div>
 
-        {/* Profile Image Section */}
-        {user.profileImg && (
-          <div className="absolute top-[160px] left-6 z-10 group">
-            <img
-              key={`profile-${imgKey}`}
-              src={`data:image/jpeg;base64,${user.profileImg}`}
-              alt="Profile"
-              className="w-24 h-24 object-cover border-4 border-white rounded-full shadow-md bg-white"
+        {/* Profile Image */}
+        <div className="absolute top-[160px] left-6 z-10 group">
+          <img
+            key={`profile-${imgKey}`}
+            src={profileImageSrc}
+            alt="Profile"
+            className="w-24 h-24 object-cover border-4 border-white rounded-full shadow-md bg-white"
+          />
+          <label className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center text-white text-xs opacity-0 group-hover:opacity-100 cursor-pointer">
+            Edit
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleProfileImageChange}
+              className="hidden"
             />
-            <label className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center text-white text-xs opacity-0 group-hover:opacity-100 cursor-pointer">
-              Edit
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleProfileImageChange}
-                className="hidden"
-              />
-            </label>
-          </div>
-        )}
+          </label>
+        </div>
 
         {/* User Info */}
         <div className="pt-20 pb-6 px-6">
@@ -160,6 +164,25 @@ const Dashboard = () => {
           <p className="text-gray-600">{user.email}</p>
         </div>
       </div>
+
+      {/* Menu Bar - BELOW Profile Card */}
+      {user.role === 'superadmin' && (
+        <div className="max-w-4xl mx-auto mt-4 bg-white rounded-lg shadow px-6 py-4 flex justify-start">
+          <button
+            onClick={() => setShowUsers(!showUsers)}
+            className="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-600"
+          >
+            {showUsers ? 'Hide Users' : 'Show All Users'}
+          </button>
+        </div>
+      )}
+
+      {/* User Table */}
+      {showUsers && (
+        <div className="max-w-4xl mx-auto mt-4">
+          <UserTable />
+        </div>
+      )}
     </div>
   );
 };

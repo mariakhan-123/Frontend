@@ -59,16 +59,16 @@ const ForgotPasswordForm = () => {
 
       <button
         type="submit"
-        className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+        className="w-full py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 transition duration-200"
       >
         Send OTP
       </button>
 
       <div className="flex justify-between items-center text-sm">
-        <Link to="/login" className="text-blue-600 hover:underline">
+        <Link to="/login" className="text-emerald-700 hover:underline">
           Back to Login
         </Link>
-        <Link to="/signup" className="text-blue-600 hover:underline">
+        <Link to="/signup" className="text-emerald-700 hover:underline">
           Create New Account
         </Link>
       </div>

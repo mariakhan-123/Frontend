@@ -124,10 +124,10 @@ const LoginForm = () => {
 
       {/* Links */}
       <div className="flex justify-between items-center text-sm">
-        <Link to="/signup" className="text-blue-600 hover:underline">
+        <Link to="/signup" className="text-emerald-700 hover:underline">
           Don’t have an account? Signup
         </Link>
-        <Link to="/forgot-password" className="text-blue-600 hover:underline">
+        <Link to="/forgot-password" className="text-emerald-700 hover:underline">
           Forgot Password?
         </Link>
       </div>
@@ -138,7 +138,7 @@ const LoginForm = () => {
         disabled={!isFormValid}
         className={`w-full py-2 text-white rounded-md transition duration-200 ${
           isFormValid
-            ? 'bg-blue-600 hover:bg-blue-700'
+            ? 'bg-emerald-600 hover:bg-emerald-700'
             : 'bg-gray-400 cursor-not-allowed'
         }`}
       >

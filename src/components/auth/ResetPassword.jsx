@@ -80,14 +80,14 @@ const ResetPasswordForm = () => {
 
       <button
         type="submit"
-        className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+        className="w-full py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition duration-200"
       >
         Set New Password
       </button>
 
       <p className="text-center text-sm text-gray-600">
         Remembered your password?{' '}
-        <a href="/login" className="text-blue-600 hover:underline">
+        <a href="/login" className="text-emerald-700 hover:underline">
           Login
         </a>
       </p>

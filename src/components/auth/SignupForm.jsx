@@ -252,8 +252,8 @@ const SignupForm = () => {
 
       {/* LOGIN LINK */}
       <div className="flex justify-between items-center text-sm">
-        <span className="text-gray-600">Already have an account?</span>
-        <Link to="/login" className="text-blue-600 hover:underline">
+        <span className="text-emerald-700">Already have an account?</span>
+        <Link to="/login" className="text-emerald-600 hover:underline">
           Login
         </Link>
       </div>
@@ -265,7 +265,7 @@ const SignupForm = () => {
         className={`
           w-full py-2 text-white rounded-md transition duration-200
           ${isFormValid
-            ? 'bg-blue-600 hover:bg-blue-700'
+            ? 'bg-blue-600 hover:bg-emerald-700'
             : 'bg-gray-400 cursor-not-allowed'}
         `}
       >
