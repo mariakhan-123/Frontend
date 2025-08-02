@@ -113,8 +113,9 @@ const SignupForm = () => {
       );
 
       console.log('Server response:', response.data);
-      alert('Signup successful!');
-      navigate('/login'); // Redirect to login
+      localStorage.setItem('email', input.email);
+      alert('Form submitted successfully!');
+      navigate('/signup-otp-form'); // Redirect to login
     } catch (err) {
       console.error('Error submitting form:', err.response?.data || err.message);
       alert('Signup failed. See console for details.');
@@ -253,7 +254,7 @@ const SignupForm = () => {
       {/* LOGIN LINK */}
       <div className="flex justify-between items-center text-sm">
         <span className="text-emerald-700">Already have an account?</span>
-        <Link to="/login" className="text-emerald-600 hover:underline">
+        <Link to="/signup-otp-form" className="text-emerald-600 hover:underline">
           Login
         </Link>
       </div>

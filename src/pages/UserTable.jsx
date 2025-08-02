@@ -1,23 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import {
+  ToggleStatusButton,
+  EditUserButton,
+  DeleteUserButton,
+  SaveChangesButton,
+  CancelEditButton,
+} from '../components/reusableComponents/buttons';
 
 const UserTable = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [editFormData, setEditFormData] = useState({ fullName: '', email: '' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const usersPerPage = 5;
 
   useEffect(() => {
-    fetchAllUsers();
-  }, []);
+    fetchAllUsers(currentPage);
+  }, [currentPage]);
 
-  const fetchAllUsers = async () => {
+  const fetchAllUsers = async (page = 1) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:8000/users/get-all-users', {
+      const res = await axios.get(`http://localhost:8000/users/get-all-users?page=${page}&limit=${usersPerPage}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setAllUsers(res.data);
+      setAllUsers(res.data.users);
+      setCurrentPage(res.data.currentPage);
+      setTotalPages(res.data.totalPages);
     } catch (err) {
       console.error('Failed to fetch users:', err);
     }
@@ -60,7 +71,7 @@ const UserTable = () => {
 
       if (res.ok) {
         alert("User deleted successfully!");
-        fetchAllUsers();
+        fetchAllUsers(currentPage);
       } else {
         alert(data.message || "Failed to delete user.");
       }
@@ -81,7 +92,7 @@ const UserTable = () => {
       );
       alert("User updated successfully!");
       setEditingUser(null);
-      fetchAllUsers();
+      fetchAllUsers(currentPage);
     } catch (err) {
       alert("Failed to update user.");
       console.error(err);
@@ -108,49 +119,44 @@ const UserTable = () => {
                 <td className="p-3 border">{u.email}</td>
                 <td className="p-3 border">
                   <span
-                    className={`px-2 py-1 rounded text-sm font-medium ${
-                      u.isActive
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
+                    className={`px-2 py-1 rounded text-sm font-medium ${u.isActive
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
+                      }`}
                   >
                     {u.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </td>
                 <td className="p-3 border">
                   <div className="flex items-center space-x-3">
-                    <button
-                      onClick={() => handleToggle(u._id)}
-                      className={`px-3 py-1 rounded text-sm font-medium ${
-                        u.isActive
-                          ? 'bg-red-500 text-white hover:bg-red-600'
-                          : 'bg-green-500 text-white hover:bg-green-600'
-                      }`}
-                    >
-                      {u.isActive ? 'Deactivate' : 'Activate'}
-                    </button>
-
-                    <button
-                      onClick={() => handleEdit(u)}
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
-                      title="Edit"
-                    >
-                      <FaEdit size={14} />
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(u._id)}
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      title="Delete"
-                    >
-                      <FaTrash size={14} />
-                    </button>
+                    <ToggleStatusButton isActive={u.isActive} onClick={() => handleToggle(u._id)} />
+                    <EditUserButton onClick={() => handleEdit(u)} />
+                    <DeleteUserButton onClick={() => handleDelete(u._id)} />
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-4 space-x-2">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span className="px-3 py-1">{currentPage} / {totalPages}</span>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
 
       {/* Modal Popup for Editing */}
@@ -182,23 +188,12 @@ const UserTable = () => {
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
-                <button
-                  type="submit"
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Save Changes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditingUser(null)}
-                  className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-                >
-                  Cancel
-                </button>
+                <SaveChangesButton />
+                <CancelEditButton onClick={() => setEditingUser(null)} />
               </div>
             </form>
 
-            {/* Close Button Top Right */}
+            {/* Close Button */}
             <button
               onClick={() => setEditingUser(null)}
               className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl"

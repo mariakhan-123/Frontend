@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { SetNewPasswordButton } from '../reusableComponents/buttons';
 const ResetPasswordForm = () => {
   const [input, setInput] = useState({
     newPassword: '',
@@ -27,7 +27,7 @@ const ResetPasswordForm = () => {
     }
 
     try {
-       await axios.post('http://localhost:8000/users/reset-password', {
+      await axios.post('http://localhost:8000/users/reset-password', {
         email,
         newPassword: input.newPassword,
       });
@@ -77,14 +77,7 @@ const ResetPasswordForm = () => {
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
-
-      <button
-        type="submit"
-        className="w-full py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition duration-200"
-      >
-        Set New Password
-      </button>
-
+      <SetNewPasswordButton />
       <p className="text-center text-sm text-gray-600">
         Remembered your password?{' '}
         <a href="/login" className="text-emerald-700 hover:underline">

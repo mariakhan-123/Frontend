@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { SendOtpButton } from '../reusableComponents/buttons'; // adjust path if needed
+
 
 const ForgotPasswordForm = () => {
   const [email, setEmail] = useState('');
-  const navigate = useNavigate(); // ✅ For navigation
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,10 +23,10 @@ const ForgotPasswordForm = () => {
 
       alert(response.data.message); // e.g., "OTP sent to your email."
 
-      // ✅ Save email to localStorage or navigate with state
+     
       localStorage.setItem('email', email); // or use context/state if you prefer
 
-      // ✅ Navigate to verify-otp page
+    
       navigate('/verify-otp');
     } catch (error) {
       console.error('Forgot password error:', error.response?.data || error.message);
@@ -56,14 +58,7 @@ const ForgotPasswordForm = () => {
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
-
-      <button
-        type="submit"
-        className="w-full py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 transition duration-200"
-      >
-        Send OTP
-      </button>
-
+     <SendOtpButton type="submit" />
       <div className="flex justify-between items-center text-sm">
         <Link to="/login" className="text-emerald-700 hover:underline">
           Back to Login

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const OTPForm = () => {
+const SignUpOtpForm = () => {
   const [otp, setOtp] = useState(['', '', '', '']);
   const navigate = useNavigate();
 
@@ -33,13 +33,13 @@ const OTPForm = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/users/verify-otp', {
+      const response = await axios.post('http://localhost:8000/users/verify-signup-otp', {
         email,
         otp: finalOtp,
       });
 
       alert(response.data.message);
-      navigate('/reset-password'); // Redirect after success
+      navigate('/login'); // Redirect after success
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || 'OTP verification failed.');
@@ -91,4 +91,4 @@ const OTPForm = () => {
   );
 };
 
-export default OTPForm;
+export default SignUpOtpForm;

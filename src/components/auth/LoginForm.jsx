@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { LoginButton } from '../reusableComponents/buttons';
+import { API } from '../reusableComponents/apiRoutes';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -61,7 +63,7 @@ const LoginForm = () => {
   if (!isFormValid) return;
 
   try {
-    const response = await axios.post('http://localhost:8000/users/login', {
+    const response = await axios.post(API.USERS.LOGIN, {
       email: input.email,
       password: input.password,
     });
@@ -73,7 +75,7 @@ const LoginForm = () => {
       localStorage.setItem('email', email);
 
       alert('Login successful!');
-      navigate('/dashboard'); // ✅ Now redirect
+      navigate('/dashboard'); 
     } else {
       alert('Unexpected response from server.');
     }
@@ -133,17 +135,7 @@ const LoginForm = () => {
       </div>
 
       {/* Submit */}
-      <button
-        type="submit"
-        disabled={!isFormValid}
-        className={`w-full py-2 text-white rounded-md transition duration-200 ${
-          isFormValid
-            ? 'bg-emerald-600 hover:bg-emerald-700'
-            : 'bg-gray-400 cursor-not-allowed'
-        }`}
-      >
-        Login
-      </button>
+     <LoginButton disabled={!isFormValid} />
     </form>
   );
 };

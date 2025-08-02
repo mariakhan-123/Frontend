@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import UserTable from '../components/auth/UserTable';
+import { LogoutButton } from '../components/reusableComponents/buttons';
+import ShowAllUsers from '../components/dashboardComponents/ShowAllUsers';
+import AddPost from '../components/dashboardComponents/AddPost';
+import ShowPosts from '../components/dashboardComponents/showPosts';
+import SettingsMenu from '../components/dashboardComponents/Settings';
+
+import PublicPage from './PublicPage'
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -9,6 +15,11 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [imgKey, setImgKey] = useState(Date.now());
   const [showUsers, setShowUsers] = useState(false);
+  const [showAllPosts, setShowAllPosts] = useState(false);
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [showPublicPosts, setShowPublicPosts] = useState(false);
+
+
   const navigate = useNavigate();
 
   const fetchUser = async () => {
@@ -110,17 +121,14 @@ const Dashboard = () => {
       {/* Navbar */}
       <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
         <h1 className="text-xl font-semibold">Dashboard</h1>
-        <div className="space-x-4">
-          <button className="text-blue-500 hover:underline">Settings</button>
-          <button onClick={handleLogout} className="text-red-500 hover:underline">
-            Logout
-          </button>
+        <div className="space-x-4 flex items-center">
+          <SettingsMenu />
+          <LogoutButton onClick={handleLogout} />
         </div>
       </nav>
 
       {/* Profile Section */}
       <div className="max-w-4xl mx-auto mt-6 bg-white rounded-lg shadow relative">
-        {/* Cover Image */}
         <div className="h-48 bg-gray-200 rounded-t-lg overflow-hidden relative">
           <img
             key={`cover-${imgKey}`}
@@ -139,7 +147,6 @@ const Dashboard = () => {
           </label>
         </div>
 
-        {/* Profile Image */}
         <div className="absolute top-[160px] left-6 z-10 group">
           <img
             key={`profile-${imgKey}`}
@@ -158,31 +165,69 @@ const Dashboard = () => {
           </label>
         </div>
 
-        {/* User Info */}
         <div className="pt-20 pb-6 px-6">
           <h2 className="text-2xl font-bold">{user.fullName}</h2>
           <p className="text-gray-600">{user.email}</p>
         </div>
       </div>
 
-      {/* Menu Bar - BELOW Profile Card */}
+      {/* Superadmin: Show Users Button */}
       {user.role === 'superadmin' && (
-        <div className="max-w-4xl mx-auto mt-4 bg-white rounded-lg shadow px-6 py-4 flex justify-start">
+        <div className="max-w-4xl mx-auto mt-8 flex flex-wrap justify-center gap-4">
           <button
-            onClick={() => setShowUsers(!showUsers)}
-            className="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-600"
+            onClick={() => {
+              setShowUsers(!showUsers);
+              setShowAllPosts(false);
+            }}
+            className="px-6 py-2 border border-green-500 text-green-700 font-semibold rounded-full transition duration-300 hover:bg-green-100 hover:text-green"
           >
-            {showUsers ? 'Hide Users' : 'Show All Users'}
+            {showUsers ? 'Hide Users' : 'Show Users'}
           </button>
         </div>
       )}
 
-      {/* User Table */}
-      {showUsers && (
-        <div className="max-w-4xl mx-auto mt-4">
-          <UserTable />
+      {/* User: Create & Show Posts Buttons */}
+      {user.role === 'user' && (
+        <div className="max-w-4xl mx-auto mt-8 flex flex-wrap justify-center gap-4">
+          <button
+            onClick={() => setShowPostModal(true)}
+           className="px-6 py-2 border border-blue-500 text-blue-500 font-semibold rounded-full transition duration-300 hover:bg-blue-500 hover:text-white"
+          >
+            Create Post
+          </button>
+          <button
+            onClick={() => {
+              setShowAllPosts(!showAllPosts);
+              setShowPublicPosts(false);
+              setShowUsers(false);
+            }}
+            className="px-6 py-2 border border-purple-500 text-purple-500 font-semibold rounded-full transition duration-300 hover:bg-purple-500 hover:text-white"
+          >
+            {showAllPosts ? 'Hide Posts' : 'Show Posts'}
+          </button>
+          <button
+            onClick={() => {
+              setShowPublicPosts(!showPublicPosts);
+              setShowAllPosts(false);  // to hide other sections when this one is shown
+              setShowUsers(false);
+            }}
+             className="px-6 py-2 border border-indigo-500 text-indigo-500 font-semibold rounded-full transition duration-300 hover:bg-indigo-500 hover:text-white"
+
+          >
+            {showPublicPosts ? 'Hide Public Posts' : 'Public Posts'}
+          </button>
+
         </div>
       )}
+
+      {/* Conditional Sections */}
+      {showPostModal && (
+        <AddPost handleClose={() => setShowPostModal(false)} />
+      )}
+      {showAllPosts && <ShowPosts />}
+      {showUsers && <ShowAllUsers />}
+      {showPublicPosts && <PublicPage />}
+
     </div>
   );
 };

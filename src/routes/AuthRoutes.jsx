@@ -5,9 +5,10 @@ import ForgetPassword from '../components/auth/ForgetPassword';
 import OtpVerification from '../components/auth/otpForm';
 import ResetPassword from '../components/auth/ResetPassword';
 import Dashboard from '../pages/Dashboard';
+import SignUpOtpForm from '../components/auth/signUpOtpForm';
 
 import ProtectedRoute from './protectedRoute';
-import PublicOnlyRoute from './PublicRoutes'; // 👈 Import this
+import PublicOnlyRoute from './PublicRoutes';
 
 const AuthRoutes = () => {
   return (
@@ -34,6 +35,14 @@ const AuthRoutes = () => {
         element={
           <PublicOnlyRoute>
             <Signup />
+          </PublicOnlyRoute>
+        }
+      />
+       <Route
+        path="/signup-otp-form"
+        element={
+          <PublicOnlyRoute>
+            <SignUpOtpForm/>
           </PublicOnlyRoute>
         }
       />
